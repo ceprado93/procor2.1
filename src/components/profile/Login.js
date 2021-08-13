@@ -21,7 +21,7 @@ const Login = () => {
       const unsaveduser = { user: localuser, password: pass };
       const cargaUtil = JSON.stringify(unsaveduser);
 
-      const respuesta = await fetch(`https://nuevo.procorlab.es/reservas.php`, {
+      const respuesta = await fetch(`https://nuevo.procorlab.es/reservaCita.php`, {
         method: "post",
         body: cargaUtil,
       });
@@ -48,12 +48,12 @@ const Login = () => {
     const cargaUtil = JSON.stringify(unregisteredUser);
     console.log(cargaUtil);
 
-    const respuesta = await fetch(`https://nuevo.procorlab.es/reservas.php`, {
+    const respuesta = await fetch(`https://nuevo.procorlab.es/reservaCita.php`, {
       method: "post",
       body: cargaUtil,
     });
 
-    // const respuesta = await fetch(`https://back.procorlab.es/reservas.php`);
+    // const respuesta = await fetch(`https://back.procorlab.es/reservaCita.php`);
 
     const exitoso = await respuesta.json();
     if (exitoso) {

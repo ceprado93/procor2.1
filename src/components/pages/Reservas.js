@@ -116,13 +116,13 @@ const Reservas = () => {
     console.log(compUsuario);
 
     if (compUsuario) {
-      compUsuario === "USUARIO NUEVO" ? handleNewUser() : handleNewBooking();
+      compUsuario === "USUARIO NUEVO" ? handleNewUser(e) : handleNewBooking(e);
     } else {
       console.log("error");
     }
   }
 
-  async function handleNewUser() {
+  async function handleNewUser(e) {
     let length = 9,
       charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
       retVal = "";
@@ -141,15 +141,17 @@ const Reservas = () => {
     const exitoso = await respuesta.json();
     if (exitoso) {
       console.log(exitoso);
-      // emailjs.sendForm("service_ms36otd", "template_rff1lo3", e.target, "user_29SCJ5tSmyhfUETa03XNu").then(
-      //   (result) => {
-      //     console.log(result.text);
-      //     handleNewBooking();
-      //   },
-      //   (error) => {
-      //     console.log(error.text);
-      //   }
-      // )
+      const emailUserData = { ...newUser, email: dataForm.email1, name: dataForm.name1 };
+
+      emailjs.sendForm("service_ms36otd", "template_cpjrmkb", emailUserData, "user_29SCJ5tSmyhfUETa03XNu").then(
+        (result) => {
+          console.log(result.text);
+          handleNewBooking(e);
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
     } else {
       console.log("error");
     }
@@ -166,6 +168,8 @@ const Reservas = () => {
     const exitoso = await respuesta.json();
     if (exitoso) {
       console.log(exitoso);
+      notify();
+
       sendEmailReserva(e);
     } else {
       console.log("error");
@@ -173,8 +177,6 @@ const Reservas = () => {
   }
 
   function sendEmailReserva(e) {
-    e.preventDefault();
-    notify();
     setShowAlert(true);
     emailjs.sendForm("service_ms36otd", "template_rff1lo3", e.target, "user_29SCJ5tSmyhfUETa03XNu").then(
       (result) => {

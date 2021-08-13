@@ -189,6 +189,61 @@ const Viaje = () => {
     newBooking.place && newBooking.place2 && newBooking.met && newBooking.name && newBooking.birth && newBooking.mail && newBooking.phone && newBooking.dni ? setThirdScreen(true) : setAlert(true);
   };
 
+  async function checkUser(e) {
+    e.preventDefault();
+
+    const dniJSON = JSON.stringify({ dni: newBooking.dni });
+    console.log(dniJSON);
+
+    const comprobacion = await fetch(`https://nuevo.procorlab.es/comprobacion.php`, {
+      method: "POST",
+      body: dniJSON,
+    });
+
+    const compUsuario = await comprobacion.json();
+    console.log(compUsuario);
+
+    if (compUsuario) {
+      compUsuario === "USUARIO NUEVO" ? handleNewUser() : handleNewBooking();
+    } else {
+      console.log("error");
+    }
+  }
+
+  async function handleNewUser() {
+    let length = 9,
+      charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+      retVal = "";
+    for (let i = 0, n = charset.length; i < length; ++i) {
+      retVal += charset.charAt(Math.floor(Math.random() * n));
+    }
+    console.log(retVal);
+    const newUser = { username: newBooking.dni, password: retVal };
+    const newUserData = JSON.stringify(newUser);
+
+    const respuesta = await fetch(`https://nuevo.procorlab.es/signup.php`, {
+      method: "POST",
+      body: newUserData,
+    });
+
+    const exitoso = await respuesta.json();
+    if (exitoso) {
+      console.log(exitoso);
+      const emailUserData = { ...newUser, email: newBooking.mail, name: newBooking.name };
+      emailjs.sendForm("service_ms36otd", "template_cpjrmkb", emailUserData, "user_29SCJ5tSmyhfUETa03XNu").then(
+        (result) => {
+          console.log(result.text);
+          handleNewBooking();
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
+    } else {
+      console.log("error");
+    }
+  }
+
   async function handleNewBooking(e) {
     e.preventDefault();
 
@@ -853,7 +908,7 @@ const Viaje = () => {
           <button className={showFinalModal ? "closeFinal__btn" : ""} onClick={() => setShowFinalModal(false)}>
             X
           </button>
-          <form className={thanks ? "hide" : ""} onSubmit={(e) => handleNewBooking(e)}>
+          <form className={thanks ? "hide" : ""} onSubmit={(e) => checkUser(e)}>
             <input type="text" name="place" value={place} style={{ visibility: "hidden", padding: 0, marginTop: 0, height: 1 }} />
             <input type="text" name="date" value={date} style={{ visibility: "hidden", padding: 0, marginTop: 0, height: 1 }} />
             <input type="text" name="type" value={type} style={{ visibility: "hidden", padding: 0, marginTop: 0, height: 1 }} />

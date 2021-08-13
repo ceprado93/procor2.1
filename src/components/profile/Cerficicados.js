@@ -217,7 +217,7 @@ const Certificados = () => {
                   <img className="bookingimg" src={elm.prueba === "pcr" ? pcr : elm.prueba === "Antígenos" ? antigenos : serologico} alt="productImage" />
                   <div className="order__info">
                     <p>Test: {elm.prueba}</p>
-                    <p>Resultado: {elm.horareserva}</p>
+                    <p>Hora: {elm.horareserva}</p>
                     <p>Lugar: {elm.lugar}</p>
                   </div>
                   <a href={elm.certificado} download>

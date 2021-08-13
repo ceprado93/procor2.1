@@ -110,8 +110,8 @@ const Reservas = () => {
 
   function sendEmailBooking(e) {
     e.preventDefault();
-
-    emailjs.send("service_ms36otd", "template_ycwj301", booking, "user_29SCJ5tSmyhfUETa03XNu").then(
+    const emailData = { ...booking, name: user.nombre, mail: user.email };
+    emailjs.send("service_ms36otd", "template_ycwj301", emailData, "user_29SCJ5tSmyhfUETa03XNu").then(
       (result) => {
         console.log(result.text);
       },
